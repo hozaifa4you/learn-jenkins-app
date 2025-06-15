@@ -21,5 +21,18 @@ pipeline {
             '''
          }
       }
+
+      stage('Test') {
+         steps {
+            sh '''
+            node --version
+            npm --version
+
+            echo "Testing..."
+
+            // npm run test
+            '''
+         }
+      }
    }
 }
