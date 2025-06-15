@@ -10,10 +10,11 @@ pipeline {
             }
          }
          steps {
-            echo '''
-            Building...
+            sh '''
             node --version
             npm --version
+
+            echo "Building..."
 
             npm ci
             npm run build
