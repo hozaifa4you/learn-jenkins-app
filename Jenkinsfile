@@ -25,7 +25,7 @@ pipeline {
       stage('Test') {
          steps {
             sh '''
-            echo "Testing..."
+            test -f build/index.html || (echo "Build failed, index.html not found" && exit 1)
             '''
          }
       }
