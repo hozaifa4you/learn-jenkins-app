@@ -2,7 +2,8 @@ pipeline {
    agent any
 
    stages {
-      stage('Build') {
+      parallel {
+         stage('Test E2E') {
          agent {
             docker {
                image 'node:22-alpine'
@@ -13,16 +14,15 @@ pipeline {
             sh '''
             node --version
             npm --version
-
-            echo "Building..."
-
+            echo "Installing dependencies..."
             npm ci
-            npm run build
+
+            echo "Running tests..."
+            npm test
             '''
          }
-      }
-
-      stage('Test') {
+         }
+      stage('Test Unit') {
          agent {
             docker {
                image 'node:22-alpine'
@@ -31,13 +31,55 @@ pipeline {
          }
          steps {
             sh '''
-            test -f build/index.html || (echo "Build failed, index.html not found" && exit 1)
+            node --version
+            npm --version
+            echo "Installing dependencies..."
+            npm ci
 
             echo "Running tests..."
             npm test
             '''
          }
       }
+      }
+
+      stage('Build') {
+         agent {
+            docker {
+               image 'node:22-alpine'
+               reuseNode true
+            }
+         }
+         steps {
+            sh '''
+            echo "Building..."
+            npm run build
+
+            test -f build/index.html || (echo "Build failed, index.html not found" && exit 1)
+            '''
+         }
+      }
+
+      stage('Deploy') {
+         agent {
+            docker {
+               image 'node:22-alpine'
+               reuseNode true
+            }
+         }
+
+         steps {
+            sh '''
+            echo "Making Ready..."
+            npm install netlify-cli -g
+            netlify --version
+
+            
+            '''
+         }
+      }
+
+      
    }
 
    post {
