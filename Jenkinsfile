@@ -26,10 +26,10 @@ pipeline {
 
             stage('Test Unit') {
                agent {
-                        docker {
+                  docker {
                      image 'node:22-alpine'
                      reuseNode true
-                        }
+                  }
                }
                steps {
                         sh '''
@@ -71,8 +71,8 @@ pipeline {
             }
             }
             environment {
-            NETLIFY_AUTH_TOKEN = credentials('netlify-auth-token')
-            NETLIFY_SITE_ID = credentials('netlify-site-id')
+            NETLIFY_AUTH_TOKEN = credentials('netlify-access-token')
+            NETLIFY_SITE_ID = credentials('netlify-project-id')
             }
             steps {
             sh '''
