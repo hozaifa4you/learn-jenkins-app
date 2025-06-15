@@ -26,8 +26,6 @@ pipeline {
          steps {
             sh '''
             echo "Testing..."
-
-            // npm run test
             '''
          }
       }
